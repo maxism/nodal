@@ -11,11 +11,11 @@
     "modular",
     "nodal"
   ],
-  "author": "Keith Horwood",
+  "author": [ "Keith Horwood", "Maxim Ulyanov" ],
   "main": "core/module.js",
   "dependencies": {
     "api-res": "~0.0.4",
-    "async": "~1.5.2",
+    "async": "~2.1.4",
     "cmnd": "~0.1.0",
     "colors": "~1.1.0",
     "cross-spawn-async": "~2.1.6",
@@ -23,11 +23,11 @@
     "dot": "~1.0.3",
     "dotenv": "^2.0.0",
     "fs-extra": "~0.26.4",
-    "fxn": "~0.0.5",
+    "fxn": "git+https://github.com/maxism/fxn.git",
     "i": "~0.3.4",
     "inquirer": "~0.11.3",
     "mime-types": "~2.1.9",
-    "pg": "~4.5.5"
+    "pg": "~6.1.2"
   },
   "devDependencies": {
     "chai": "~3.5.0",
@@ -39,13 +39,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/keithwhor/nodal.git"
+    "url": "https://github.com/maxism/nodal.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/keithwhor/nodal/issues"
+    "url": "https://github.com/maxism/nodal/issues"
   },
-  "homepage": "https://github.com/keithwhor/nodal",
+  "homepage": "https://github.com/maxism/nodal",
   "bin": {
     "nodal": "cli/bin.js"
   }
