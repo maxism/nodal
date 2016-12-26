@@ -52,6 +52,19 @@ module.exports = Nodal => {
 
     House.joinsTo(Parent);
 
+    let timeTesterSchema = {
+      table: 'time_testers',
+      columns: [
+        { name: 'id', type: 'int' },
+        { name: 'time', type: 'time' }
+      ]
+    }
+
+    class TimeTester extends Nodal.Model {}
+    TimeTester.setDatabase(db);
+    TimeTester.setSchema(timeTesterSchema)
+
+
     class User extends Nodal.Model {}
     User.setSchema({
       table: 'users',
@@ -88,7 +101,7 @@ module.exports = Nodal => {
       db.connect(Nodal.my.Config.db.main);
 
       db.transaction(
-        [schemaParent, schemaHouse].map(schema => {
+        [schemaParent, schemaHouse, timeTesterSchema].map(schema => {
           return db.adapter.generateCreateTableQuery(schema.table, schema.columns);
         }).join(';'),
         function(err, result) {
@@ -271,6 +284,43 @@ module.exports = Nodal => {
       expect(obj[0]).to.not.have.ownProperty('content');
       expect(obj[0]).to.not.have.ownProperty('created_at');
       expect(obj[0]).to.not.have.ownProperty('updated_at');
+
+    });
+
+    it('should be valid convert function for time', function() {
+
+      const model = new TimeTester()
+      const type = model.getDataTypeOf('time')
+
+      expect(type).to.have.ownProperty('convert');
+      expect(type.convert).to.be.an('function');
+
+    });
+
+    it('should be valid time type', function() {
+
+      const model = new TimeTester()
+      const value = model.convert('time', '23:00')
+
+      expect(value).to.be.equal('23:00:00')
+
+    });
+
+    it('should not throw errors while saving time values', function(done) {
+
+      const mock = new TimeTester()
+      mock.set('id', 1)
+      mock.set('time', '23:12:22')
+
+      mock.save((err, saved) => {
+        if (err) {
+          return done(err)
+        }
+
+        expect(saved.get('time')).to.be.equal('23:12:22')
+
+        done()
+      })
 
     });
 

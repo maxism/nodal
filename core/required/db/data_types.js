@@ -42,6 +42,24 @@ module.exports = {
       return v;
     }
   },
+  time: {
+    convert: function(v) {
+      if(typeof v !== 'string') {
+        v = new String(v).toString()
+      }
+
+      const parts = v.split(':')
+      const hours = parts[0]
+      const minutes = parts[1]
+      const seconds = parts[2]
+
+      return [
+        hours && hours.length === 2 ? hours : '00',
+        minutes && minutes.length === 2 ? minutes : '00',
+        seconds && seconds.length === 2 ? seconds : '00'
+      ].join(':');
+    }
+  },
   boolean: {
     convert: function(v) {
       return typeof v === 'string' ? [true, false][({'f':1,'false':1,'n':1,'no':1,'off':1,'0':1,'':1}[v]|0)] : !!v;

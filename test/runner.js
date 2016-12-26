@@ -79,13 +79,13 @@ describe('Test Suite', function() {
   } else {
 
     [
-      'nodal',
-      'database',
-      'api',
+      // 'nodal',
+      // 'database',
+      // 'api',
       'model',
-      'composer',
-      'relationship_graph',
-      'graph_query'
+      // 'composer',
+      // 'relationship_graph',
+      // 'graph_query'
     ].forEach(filename => require(`./tests/${filename}.js`)(Nodal));
 
   }
