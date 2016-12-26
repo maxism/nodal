@@ -789,6 +789,9 @@ PostgresAdapter.prototype.types = {
   datetime: {
     dbName: 'TIMESTAMP'
   },
+  time: {
+    dbName: 'TIME'
+  },
   boolean: {
     dbName: 'BOOLEAN'
   },
