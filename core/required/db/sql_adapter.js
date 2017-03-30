@@ -380,7 +380,17 @@ class SQLAdapter {
         columnName: where.columnName,
         refName: [this.escapeField(where.table || table), this.escapeField(where.columnName)].join('.'),
         comparator: where.comparator,
-        value: where.value,
+        value: (
+          where.valueFunction ?
+            where.valueFunction.apply(
+              null,
+              where.valueColumnNames.map(columnName => {
+                return [this.escapeField(where.table || table), this.escapeField(columnName)].join('.');
+              })
+            ) :
+            where.value
+        ),
+        sanitize: !where.valueFunction,
         ignoreValue: !!this.comparatorIgnoresValue[where.comparator],
         joined: where.joined,
         joins: where.joins
@@ -445,7 +455,11 @@ class SQLAdapter {
 
       if (!joined) {
 
-        clauses.push(comparators[whereObj.comparator](whereObj.refName, whereObj.value));
+        clauses.push(
+          whereObj.sanitize ?
+            comparators[whereObj.comparator](whereObj.refName, whereObj.value) :
+            comparators[whereObj.comparator](whereObj.refName, whereObj.value).replace(/__VAR__/gi, whereObj.value)
+        );
 
       } else {
 
@@ -512,7 +526,7 @@ class SQLAdapter {
 
   getParamsFromMultiFilter(multiFilter) {
     return [].concat.apply([], multiFilter)
-      .filter(whereObj => !whereObj.ignoreValue)
+      .filter(whereObj => !whereObj.ignoreValue && whereObj.sanitize)
       .map(whereObj => whereObj.value);
   }
 
@@ -641,14 +655,22 @@ SQLAdapter.prototype.comparators = {
   like: field => `${field} LIKE __VAR__`,
   ilike: field => `${field} ILIKE __VAR__`,
   is_null: field => `${field} IS NULL`,
+  is_true: field => `${field} IS TRUE`,
+  is_false: field => `${field} IS FALSE`,
   not_null: field => `${field} IS NOT NULL`,
+  not_true: field => `${field} IS NOT TRUE`,
+  not_false: field => `${field} IS NOT FALSE`,
   in: field => `ARRAY[${field}] <@ __VAR__`,
   not_in: field => `NOT (ARRAY[${field}] <@ __VAR__)`
 };
 
 SQLAdapter.prototype.comparatorIgnoresValue = {
   is_null: true,
-  not_null: true
+  is_true: true,
+  is_false: true,
+  not_null: true,
+  not_true: true,
+  not_false: true
 };
 
 SQLAdapter.prototype.documentTypes = [];
