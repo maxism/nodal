@@ -3,9 +3,12 @@
 const colors = require('colors/safe');
 
 const DEFAULT_ADAPTER = 'postgres';
+
 const ADAPTERS = {
   'postgres': './adapters/postgres.js',
 };
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 class Database {
 
@@ -39,15 +42,17 @@ class Database {
 
   log(sql, params, time) {
 
-    let colorFunc = this.__logColorFuncs[this._useLogColor];
+    if (!isProduction) {
+      let colorFunc = this.__logColorFuncs[this._useLogColor];
 
-    console.log();
-    console.log(colorFunc(sql));
-    params && console.log(colorFunc(JSON.stringify(params)));
-    time && console.log(colorFunc(time + 'ms'));
-    console.log();
+      console.log();
+      console.log(colorFunc(sql));
+      params && console.log(colorFunc(JSON.stringify(params)));
+      time && console.log(colorFunc(time + 'ms'));
+      console.log();
 
-    this._useLogColor = (this._useLogColor + 1) % this.__logColorFuncs.length;
+      this._useLogColor = (this._useLogColor + 1) % this.__logColorFuncs.length;
+    }
 
     return true;
 
@@ -55,13 +60,16 @@ class Database {
 
   info(message) {
 
-    console.log(colors.green.bold('Database Info: ') + message);
-
+    if (!isProduction) {
+      console.log(colors.green.bold('Database Info: ') + message);
+    }
+    
   }
 
   error(message) {
 
     console.log(colors.red.bold('Database Error: ') + message);
+
     return true;
 
   }
