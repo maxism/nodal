@@ -8,7 +8,6 @@ const utilities = require('../../utilities.js');
 const async = require('async');
 
 const pg = require('pg');
-pg.defaults.poolSize = 8;
 
 class PostgresAdapter extends SQLAdapter {
 
@@ -19,13 +18,14 @@ class PostgresAdapter extends SQLAdapter {
     cfg = cfg.connectionString ? this.parseConnectionString(cfg.connectionString) : cfg;
 
     this.db = db;
-    this._config = cfg;
+    this.pool = new pg.Pool(cfg)
+    this.close = this.close.bind(this)
 
   }
 
   close() {
 
-    pg.end();
+    this.pool.end();
 
   }
 
@@ -67,7 +67,7 @@ class PostgresAdapter extends SQLAdapter {
 
   createTransaction(callback) {
 
-    pg.connect(this._config, (err, client, complete) => {
+    this.pool.connect((err, client, complete) => {
 
       if (err) {
         return callback(err);
@@ -104,7 +104,7 @@ class PostgresAdapter extends SQLAdapter {
     let start = new Date().valueOf();
     let log = this.db.log.bind(this.db);
 
-    pg.connect(this._config, (err, client, complete) => {
+    this.pool.connect((err, client, complete) => {
 
       if (err) {
         this.db.error(err.message);
@@ -146,7 +146,7 @@ class PostgresAdapter extends SQLAdapter {
 
     let start = new Date().valueOf();
 
-    pg.connect(this._config, (err, client, complete) => {
+    this.pool.connect((err, client, complete) => {
 
       if (err) {
         this.db.error(err.message);

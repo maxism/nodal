@@ -18,23 +18,23 @@
   "main": "core/module.js",
   "dependencies": {
     "api-res": "~0.0.4",
-    "async": "~2.1.4",
-    "cmnd": "~0.1.0",
+    "async": "^2.6.0",
+    "cmnd": "^0.2.1",
     "colors": "~1.1.0",
     "cross-spawn-async": "~2.2.5",
     "deep-equal": "~1.0.1",
-    "dot": "~1.0.3",
-    "dotenv": "^2.0.0",
-    "fs-extra": "~0.26.4",
+    "dot": "^1.1.2",
+    "dotenv": "^4.0.0",
+    "fs-extra": "^5.0.0",
     "fxn": "git+https://github.com/maxism/fxn.git",
     "i": "~0.3.4",
-    "inquirer": "~0.11.3",
+    "inquirer": "^5.0.0",
     "mime-types": "~2.1.9",
-    "pg": "~6.1.2"
+    "pg": "^7.4.1"
   },
   "devDependencies": {
-    "chai": "~3.5.0",
-    "mocha": "~2.4.5"
+    "chai": "^4.1.2",
+    "mocha": "^4.1.0"
   },
   "scripts": {
     "test": "mocha ./test/runner.js",
