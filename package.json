@@ -11,7 +11,10 @@
     "modular",
     "nodal"
   ],
-  "author": [ "Keith Horwood", "Maxim Ulyanov" ],
+  "author": [
+    "Keith Horwood",
+    "Maxim Ulyanov"
+  ],
   "main": "core/module.js",
   "dependencies": {
     "api-res": "~0.0.4",
