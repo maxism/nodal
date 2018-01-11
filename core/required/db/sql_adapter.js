@@ -532,10 +532,25 @@ class SQLAdapter {
 
   generateOrderByClause(table, orderByArray, groupByArray) {
 
-    return !orderByArray.length ? '' : ' ORDER BY ' + orderByArray.map(v => {
-      let columns = v.columnNames.map(columnName => `${this.escapeField(table)}.${this.escapeField(columnName)}`);
-      return `${(v.transformation || (v => v)).apply(null, columns)} ${v.direction}`;
-    }).join(', ');
+    if (!orderByArray.length) {
+      return ''
+    }
+
+    const orderingMap = orderByArray.reduce((acc, v) => {
+      if (v.isJoinOrdering && table !== 'j') {
+        return acc
+      }
+
+      const columns = v.columnNames.map(columnName => {
+        return `${this.escapeField(table)}.${this.escapeField(columnName)}`
+      });
+
+      acc.push(`${(v.transformation || (v => v)).apply(null, columns)} ${v.direction}`);
+
+      return acc
+    }, [])
+
+    return orderingMap.length ? ' ORDER BY ' + orderingMap.join(', ') : ''
 
   }
 

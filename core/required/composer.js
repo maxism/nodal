@@ -763,17 +763,40 @@ class Composer {
       transformation = v => `${v}`;
     }
 
-    fields.forEach(field => {
+    const isJoinOrdering = fields.reduce((val, field) => {
+      const joinedField = field.split('__')
+
+      if (joinedField.length > 1) {
+        const relationship = this.Model.relationships().findExplicit(joinedField[0]);
+
+        if (!relationship) {
+          throw new Error(`Model ${this.Model.name} does not have relationship "${joinName}".`);
+        }
+
+        const joinModel = relationship.getModel()
+
+        if (!joinModel.hasColumn(joinedField[1])) {
+          throw new Error(`Cannot order by ${joinedField[0]}, it does not belong to ${joinModel.name}`);
+        }
+
+        transformation = (v) => `"${joinedField[0]}"."${joinedField[1]}"`
+
+        return true
+      }
+
       if (!this.Model.hasColumn(field)) {
         throw new Error(`Cannot order by ${field}, it does not belong to ${this.Model.name}`);
       }
-    });
+
+      return val
+    }, false);
 
     this._command = {
       type: 'orderBy',
       data: {
         columnNames: fields,
         transformation: transformation,
+        isJoinOrdering: isJoinOrdering,
         direction: ({'asc': 'ASC', 'desc': 'DESC'}[(direction + '').toLowerCase()] || 'ASC')
       }
     };

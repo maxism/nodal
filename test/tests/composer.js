@@ -1236,6 +1236,25 @@ module.exports = Nodal => {
 
     });
 
+    it('Should order by parent__id while ordering in where clause', done => {
+
+      Child.query()
+        .join('parent')
+        .join('parent__pets')
+        .where({
+          __order: 'parent__id desc'
+        })
+        .end((err, children) => {
+
+          expect(err).to.equal(null);
+          expect(children.length).to.equal(100);
+          expect(children[0].joined('parent').get('id')).to.equal(10);
+          done();
+
+        });
+
+    });
+
     it('Should not fetch parents if they don\'t exist', done => {
 
       Child.create({name: 'Ada'}, (err, child) => {
