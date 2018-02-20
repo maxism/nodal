@@ -639,6 +639,7 @@ SQLAdapter.prototype.typeProperties = [
   'primary_key',
   'auto_increment',
   'array',
+  'force_update',
   'defaultValue'
 ];
 
@@ -649,6 +650,7 @@ SQLAdapter.prototype.typePropertyDefaults = {
   primary_key: false,
   auto_increment: false,
   array: false,
+  force_update: false,
   defaultValue: null
 };
 
