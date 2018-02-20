@@ -1083,6 +1083,16 @@ class Model {
   }
 
   /**
+  * Determine whether or not this field is need to be force updated
+  * @param {string} field
+  * @return {boolean}
+  */
+  needToBeForced(field) {
+    let fieldData = this._columnLookup[field];
+    return !!(fieldData && fieldData.properties && fieldData.properties.force_update);
+  }
+
+  /**
   * Retrieve the defaultValue for this field from our schema
   * @param {string} field
   * @return {any}
@@ -1137,12 +1147,18 @@ class Model {
 
     if (!this.inStorage()) {
 
-      columns = this.fieldList().filter(v => !this.isFieldPrimaryKey(v) && this.get(v) !== undefined);
+      columns = this.fieldList().filter(v => {
+        return !this.isFieldPrimaryKey(v) && !this.needToBeForced(v) && this.get(v) !== void 0
+      });
+
       query = db.adapter.generateInsertQuery(this.schema.table, columns);
 
     } else {
 
-      columns = ['id'].concat(this.changedFields().filter(v => !this.isFieldPrimaryKey(v)));
+      columns = ['id'].concat(this.changedFields().filter(v => {
+        return !this.isFieldPrimaryKey(v) && !this.needToBeForced(v)
+      });
+
       query = db.adapter.generateUpdateQuery(this.schema.table, columns);
 
     }
