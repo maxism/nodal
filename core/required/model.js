@@ -1157,7 +1157,7 @@ class Model {
 
       columns = ['id'].concat(this.changedFields().filter(v => {
         return !this.isFieldPrimaryKey(v) && !this.needToBeForced(v)
-      });
+      }));
 
       query = db.adapter.generateUpdateQuery(this.schema.table, columns);
 
