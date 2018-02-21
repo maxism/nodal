@@ -85,7 +85,7 @@ class Bootstrapper {
 
           schema.save();
 
-          callback(null, `Prepared database "${db.adapter._config.database}" for migrations`);
+          callback(null, `Prepared database "${db.adapter.pool.options.database}" for migrations`);
 
         }
       );
